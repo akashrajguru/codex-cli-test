@@ -18,6 +18,8 @@ describe("Home page", () => {
     expect(
       screen.getByLabelText(/game arena\. tap or press space to jump\./i)
     ).toBeInTheDocument();
+
+    expect(screen.getByText(/press space to start/i)).toBeInTheDocument();
   });
 
   it("moves the player up and lands after a jump", () => {
@@ -31,6 +33,7 @@ describe("Home page", () => {
       jest.advanceTimersByTime(100);
     });
     expect(player.style.transform).not.toBe("translateY(0px)");
+    expect(screen.queryByText(/press space to start/i)).toBeNull();
 
     act(() => {
       jest.advanceTimersByTime(2000);
@@ -38,9 +41,10 @@ describe("Home page", () => {
     expect(player).toHaveStyle({ transform: "translateY(0px)" });
   });
 
-  it("spawns obstacles over time", () => {
+  it("spawns obstacles over time after the run starts", () => {
     render(<Home />);
 
+    fireEvent.keyDown(window, { code: "Space" });
     act(() => {
       jest.advanceTimersByTime(1300);
     });
@@ -51,6 +55,7 @@ describe("Home page", () => {
   it("ends the run when an obstacle reaches the player", () => {
     render(<Home />);
 
+    fireEvent.keyDown(window, { code: "Space" });
     act(() => {
       jest.advanceTimersByTime(3200);
     });
@@ -60,11 +65,18 @@ describe("Home page", () => {
     ).toBeInTheDocument();
   });
 
-  it("increments the score while running", () => {
+  it("increments the score only after the run starts", () => {
     render(<Home />);
 
     const score = screen.getByText(/score/i);
 
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(score.textContent).toMatch(/score 0/i);
+
+    fireEvent.keyDown(window, { code: "Space" });
     act(() => {
       jest.advanceTimersByTime(200);
     });

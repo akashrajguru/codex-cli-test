@@ -30,12 +30,14 @@ export default function Home() {
   const [isOnGround, setIsOnGround] = useState(true);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
   const [score, setScore] = useState(0);
 
   const jump = useCallback(() => {
     if (positionRef.current === 0 && !isGameOver) {
       velocityRef.current = JUMP_VELOCITY;
       setIsOnGround(false);
+      setIsRunning(true);
     }
   }, [isGameOver]);
 
@@ -48,6 +50,7 @@ export default function Home() {
     setIsOnGround(true);
     setObstacles([]);
     setIsGameOver(false);
+    setIsRunning(false);
     setScore(0);
   }, []);
 
@@ -65,7 +68,7 @@ export default function Home() {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      if (isGameOver) {
+      if (isGameOver || !isRunning) {
         return;
       }
 
@@ -123,7 +126,7 @@ export default function Home() {
     }, TICK_MS);
 
     return () => window.clearInterval(id);
-  }, [isGameOver]);
+  }, [isGameOver, isRunning]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-200 via-amber-50 to-amber-100 px-4 py-10 text-slate-900">
@@ -143,10 +146,23 @@ export default function Home() {
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500" />
           <div
             data-testid="player"
-            className="absolute bottom-16 left-16 h-10 w-10 rounded-xl bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.4)]"
+            className="absolute bottom-16 left-16"
             style={{ transform: `translateY(${-playerY}px)` }}
             aria-label={isOnGround ? "Player ready" : "Player jumping"}
-          />
+          >
+            <div className="relative h-10 w-12">
+              <div className="absolute bottom-1 left-1 h-6 w-10 rounded-full bg-amber-400 shadow-[3px_3px_0px_0px_rgba(15,23,42,0.35)]" />
+              <div
+                className={`absolute bottom-3 left-2 h-3 w-5 rounded-full bg-amber-300 ${
+                  isOnGround ? "" : "duck-wing-flap"
+                }`}
+              />
+              <div className="absolute bottom-5 left-7 h-4 w-4 rounded-full bg-amber-400" />
+              <div className="absolute bottom-6 left-9 h-2 w-3 rounded-sm bg-orange-500" />
+              <div className="absolute bottom-7 left-8 h-1 w-1 rounded-full bg-slate-900" />
+              <div className="absolute bottom-0 left-2 h-2 w-3 rounded-full bg-amber-600" />
+            </div>
+          </div>
           {obstacles.map((obstacle) => (
             <div
               key={obstacle.id}
@@ -162,6 +178,14 @@ export default function Home() {
           ))}
           <div className="absolute left-1/2 top-10 h-6 w-6 rounded-full bg-white/70 blur-[1px]" />
           <div className="absolute left-1/3 top-20 h-8 w-8 rounded-full bg-white/60 blur-[1px]" />
+
+          {!isRunning && !isGameOver && (
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-950/30 text-slate-100">
+              <span className="rounded-full border-2 border-slate-100 px-5 py-2 text-xs uppercase tracking-[0.3em]">
+                Press Space to Start
+              </span>
+            </div>
+          )}
 
           {isGameOver && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-slate-950/70 text-slate-100">
