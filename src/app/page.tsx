@@ -11,6 +11,9 @@ const OBSTACLE_HEIGHT = 32;
 const OBSTACLE_WIDTH = 24;
 const OBSTACLE_SPEED = 4;
 const OBSTACLE_SPAWN_MS = 1200;
+const MIN_OBSTACLE_SPAWN_MS = 650;
+const SPAWN_RAMP_STEP = 30;
+const SPEED_RAMP_STEP = 0.25;
 const OBSTACLE_START_X = 560;
 
 type Obstacle = {
@@ -26,12 +29,15 @@ export default function Home() {
   const obstaclesRef = useRef<Obstacle[]>([]);
   const spawnTimerRef = useRef(0);
   const obstacleIdRef = useRef(0);
+  const obstacleSpeedRef = useRef(OBSTACLE_SPEED);
+  const obstacleSpawnMsRef = useRef(OBSTACLE_SPAWN_MS);
   const [playerY, setPlayerY] = useState(0);
   const [isOnGround, setIsOnGround] = useState(true);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [score, setScore] = useState(0);
+  const [difficultyTier, setDifficultyTier] = useState(1);
 
   const jump = useCallback(() => {
     if (positionRef.current === 0 && !isGameOver) {
@@ -46,12 +52,15 @@ export default function Home() {
     velocityRef.current = 0;
     obstaclesRef.current = [];
     spawnTimerRef.current = 0;
+    obstacleSpeedRef.current = OBSTACLE_SPEED;
+    obstacleSpawnMsRef.current = OBSTACLE_SPAWN_MS;
     setPlayerY(0);
     setIsOnGround(true);
     setObstacles([]);
     setIsGameOver(false);
     setIsRunning(false);
     setScore(0);
+    setDifficultyTier(1);
   }, []);
 
   useEffect(() => {
@@ -88,7 +97,7 @@ export default function Home() {
       }
 
       spawnTimerRef.current += TICK_MS;
-      if (spawnTimerRef.current >= OBSTACLE_SPAWN_MS) {
+      if (spawnTimerRef.current >= obstacleSpawnMsRef.current) {
         spawnTimerRef.current = 0;
         const next: Obstacle = {
           id: obstacleIdRef.current++,
@@ -103,7 +112,7 @@ export default function Home() {
         obstaclesRef.current = obstaclesRef.current
           .map((obstacle) => ({
             ...obstacle,
-            x: obstacle.x - OBSTACLE_SPEED,
+            x: obstacle.x - obstacleSpeedRef.current,
           }))
           .filter((obstacle) => obstacle.x + obstacle.width > 0);
       }
@@ -119,7 +128,18 @@ export default function Home() {
       if (hit) {
         setIsGameOver(true);
       } else {
-        setScore((current) => current + 1);
+        setScore((current) => {
+          const nextScore = current + 1;
+          if (nextScore % 120 === 0) {
+            obstacleSpeedRef.current += SPEED_RAMP_STEP;
+            obstacleSpawnMsRef.current = Math.max(
+              MIN_OBSTACLE_SPAWN_MS,
+              obstacleSpawnMsRef.current - SPAWN_RAMP_STEP
+            );
+            setDifficultyTier((currentTier) => currentTier + 1);
+          }
+          return nextScore;
+        });
       }
 
       setObstacles([...obstaclesRef.current]);
@@ -134,6 +154,7 @@ export default function Home() {
         <header className="flex items-center justify-between text-sm uppercase tracking-[0.3em] text-slate-600">
           <span>Offline Run</span>
           <span>Score {score}</span>
+          <span>Tier {difficultyTier}</span>
         </header>
 
         <section

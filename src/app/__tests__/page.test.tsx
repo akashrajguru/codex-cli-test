@@ -83,4 +83,36 @@ describe("Home page", () => {
 
     expect(score.textContent).not.toMatch(/score 0/i);
   });
+
+  it("ramps difficulty as the score increases", () => {
+    render(<Home />);
+
+    fireEvent.keyDown(window, { code: "Space" });
+
+    act(() => {
+      jest.advanceTimersByTime(1900);
+    });
+
+    const obstaclesBefore = screen.getAllByTestId("obstacle").length;
+
+    act(() => {
+      jest.advanceTimersByTime(2200);
+    });
+
+    const obstaclesAfter = screen.getAllByTestId("obstacle").length;
+    expect(obstaclesAfter).toBeGreaterThanOrEqual(obstaclesBefore);
+  });
+
+  it("shows the difficulty tier as it ramps", () => {
+    render(<Home />);
+
+    fireEvent.keyDown(window, { code: "Space" });
+    expect(screen.getByText(/tier 1/i)).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    expect(screen.getByText(/tier 2/i)).toBeInTheDocument();
+  });
 });
