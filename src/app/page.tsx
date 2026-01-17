@@ -15,6 +15,7 @@ const MIN_OBSTACLE_SPAWN_MS = 650;
 const SPAWN_RAMP_STEP = 30;
 const SPEED_RAMP_STEP = 0.25;
 const OBSTACLE_START_X = 560;
+const DAY_NIGHT_MS = 3000;
 
 type Obstacle = {
   id: number;
@@ -31,6 +32,7 @@ export default function Home() {
   const obstacleIdRef = useRef(0);
   const obstacleSpeedRef = useRef(OBSTACLE_SPEED);
   const obstacleSpawnMsRef = useRef(OBSTACLE_SPAWN_MS);
+  const dayNightTimerRef = useRef(0);
   const [playerY, setPlayerY] = useState(0);
   const [isOnGround, setIsOnGround] = useState(true);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
@@ -38,6 +40,7 @@ export default function Home() {
   const [isRunning, setIsRunning] = useState(false);
   const [score, setScore] = useState(0);
   const [difficultyTier, setDifficultyTier] = useState(1);
+  const [isNight, setIsNight] = useState(false);
 
   const jump = useCallback(() => {
     if (positionRef.current === 0 && !isGameOver) {
@@ -54,6 +57,7 @@ export default function Home() {
     spawnTimerRef.current = 0;
     obstacleSpeedRef.current = OBSTACLE_SPEED;
     obstacleSpawnMsRef.current = OBSTACLE_SPAWN_MS;
+    dayNightTimerRef.current = 0;
     setPlayerY(0);
     setIsOnGround(true);
     setObstacles([]);
@@ -61,6 +65,7 @@ export default function Home() {
     setIsRunning(false);
     setScore(0);
     setDifficultyTier(1);
+    setIsNight(false);
   }, []);
 
   useEffect(() => {
@@ -117,6 +122,12 @@ export default function Home() {
           .filter((obstacle) => obstacle.x + obstacle.width > 0);
       }
 
+      dayNightTimerRef.current += TICK_MS;
+      if (dayNightTimerRef.current >= DAY_NIGHT_MS) {
+        dayNightTimerRef.current = 0;
+        setIsNight((current) => !current);
+      }
+
       const hit = obstaclesRef.current.some((obstacle) => {
         const overlapsX =
           obstacle.x < PLAYER_X + PLAYER_SIZE &&
@@ -154,17 +165,44 @@ export default function Home() {
         <header className="flex items-center justify-between text-sm uppercase tracking-[0.3em] text-slate-600">
           <span>Offline Run</span>
           <span>Score {score}</span>
-          <span>Tier {difficultyTier}</span>
+          <span
+            key={difficultyTier}
+            data-testid="tier"
+            className={difficultyTier > 1 ? "tier-pulse" : ""}
+          >
+            Tier {difficultyTier}
+          </span>
         </header>
 
         <section
-          className="relative h-72 w-full overflow-hidden rounded-3xl border-2 border-slate-900 bg-gradient-to-b from-sky-300 via-sky-200 to-amber-100 shadow-[8px_8px_0px_0px_rgba(15,23,42,0.6)]"
+          className={`relative h-72 w-full overflow-hidden rounded-3xl border-2 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,0.6)] ${
+            isNight
+              ? "bg-gradient-to-b from-slate-900 via-slate-800 to-indigo-900"
+              : "bg-gradient-to-b from-sky-300 via-sky-200 to-amber-100"
+          }`}
           onPointerDown={jump}
           role="button"
           tabIndex={0}
           aria-label="Game arena. Tap or press space to jump."
         >
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500" />
+          <div
+            data-testid="haze"
+            className="haze-drift absolute left-[-10%] top-10 h-24 w-72 rounded-full bg-gradient-to-r from-white/55 via-white/35 to-white/10 blur-2xl"
+            aria-hidden="true"
+          />
+          <div
+            data-testid="haze"
+            className="haze-drift-slow absolute right-[-20%] top-24 h-28 w-80 rounded-full bg-gradient-to-r from-white/40 via-white/25 to-white/5 blur-2xl"
+            aria-hidden="true"
+          />
+          <div
+            data-testid="ground"
+            className={`absolute inset-x-0 bottom-0 h-16 ${
+              isNight
+                ? "bg-gradient-to-r from-slate-700 via-slate-600 to-slate-500"
+                : "bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500"
+            }`}
+          />
           <div
             data-testid="player"
             className="absolute bottom-16 left-16"
@@ -197,6 +235,55 @@ export default function Home() {
               aria-hidden="true"
             />
           ))}
+          {isNight ? (
+            <div
+              data-testid="moon"
+              className="absolute right-10 top-8 h-10 w-10 rounded-full bg-slate-100 shadow-[0_0_12px_rgba(248,250,252,0.7)]"
+              aria-hidden="true"
+            >
+              <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-slate-800" />
+            </div>
+          ) : (
+            <div
+              data-testid="sun"
+              className="absolute right-10 top-8 h-10 w-10 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,0.9)]"
+              aria-hidden="true"
+            />
+          )}
+          {isNight && (
+            <>
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-1/4 top-8 h-1 w-1 rounded-full bg-white/80"
+                style={{ animationDelay: "0s" }}
+              />
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-1/3 top-16 h-1.5 w-1.5 rounded-full bg-white/70"
+                style={{ animationDelay: "0.6s" }}
+              />
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-2/3 top-12 h-1 w-1 rounded-full bg-white/60"
+                style={{ animationDelay: "1.1s" }}
+              />
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-[20%] top-28 h-1.5 w-1.5 rounded-full bg-white/70"
+                style={{ animationDelay: "0.3s" }}
+              />
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-[70%] top-28 h-1 w-1 rounded-full bg-white/80"
+                style={{ animationDelay: "0.9s" }}
+              />
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-[80%] top-16 h-1.5 w-1.5 rounded-full bg-white/60"
+                style={{ animationDelay: "1.4s" }}
+              />
+            </>
+          )}
           <div className="absolute left-1/2 top-10 h-6 w-6 rounded-full bg-white/70 blur-[1px]" />
           <div className="absolute left-1/3 top-20 h-8 w-8 rounded-full bg-white/60 blur-[1px]" />
 

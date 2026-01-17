@@ -115,4 +115,71 @@ describe("Home page", () => {
 
     expect(screen.getByText(/tier 2/i)).toBeInTheDocument();
   });
+
+  it("pulses the tier badge when difficulty increases", () => {
+    render(<Home />);
+
+    fireEvent.keyDown(window, { code: "Space" });
+
+    const tierStart = screen.getByTestId("tier");
+    expect(tierStart.className).not.toMatch(/tier-pulse/);
+
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    const tier = screen.getByTestId("tier");
+    expect(tier.className).toMatch(/tier-pulse/);
+  });
+
+  it("toggles between day and night as the score climbs", () => {
+    render(<Home />);
+
+    fireEvent.keyDown(window, { code: "Space" });
+    expect(screen.getByTestId("sun")).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(3200);
+    });
+
+    expect(screen.getByTestId("moon")).toBeInTheDocument();
+  });
+
+  it("shifts the ground colors at night", () => {
+    render(<Home />);
+
+    fireEvent.keyDown(window, { code: "Space" });
+
+    const ground = screen.getByTestId("ground");
+    expect(ground.className).toMatch(/amber/);
+
+    act(() => {
+      jest.advanceTimersByTime(3200);
+    });
+
+    expect(ground.className).toMatch(/slate/);
+  });
+
+  it("shows stars at night", () => {
+    render(<Home />);
+
+    fireEvent.keyDown(window, { code: "Space" });
+    expect(screen.queryAllByTestId("star")).toHaveLength(0);
+
+    act(() => {
+      jest.advanceTimersByTime(3200);
+    });
+
+    const stars = screen.getAllByTestId("star");
+    expect(stars.length).toBeGreaterThan(0);
+    expect(stars[0].className).toMatch(/star-twinkle/);
+  });
+
+  it("renders a drifting haze layer", () => {
+    render(<Home />);
+
+    const hazeLayers = screen.getAllByTestId("haze");
+    expect(hazeLayers[0].className).toMatch(/haze-drift/);
+    expect(hazeLayers[1].className).toMatch(/haze-drift-slow/);
+  });
 });
