@@ -254,7 +254,7 @@ export default function Home() {
             <>
               <div
                 data-testid="star"
-                className="star-twinkle absolute left-1/4 top-8 h-1 w-1 rounded-full bg-white/80"
+                className="star-twinkle star-glow absolute left-1/4 top-8 h-1 w-1 rounded-full bg-white/80"
                 style={{ animationDelay: "0s" }}
               />
               <div
@@ -264,7 +264,7 @@ export default function Home() {
               />
               <div
                 data-testid="star"
-                className="star-twinkle absolute left-2/3 top-12 h-1 w-1 rounded-full bg-white/60"
+                className="star-twinkle star-glow absolute left-2/3 top-12 h-1 w-1 rounded-full bg-white/60"
                 style={{ animationDelay: "1.1s" }}
               />
               <div
@@ -274,7 +274,7 @@ export default function Home() {
               />
               <div
                 data-testid="star"
-                className="star-twinkle absolute left-[70%] top-28 h-1 w-1 rounded-full bg-white/80"
+                className="star-twinkle star-glow absolute left-[70%] top-28 h-1 w-1 rounded-full bg-white/80"
                 style={{ animationDelay: "0.9s" }}
               />
               <div

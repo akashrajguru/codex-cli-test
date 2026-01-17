@@ -173,6 +173,9 @@ describe("Home page", () => {
     const stars = screen.getAllByTestId("star");
     expect(stars.length).toBeGreaterThan(0);
     expect(stars[0].className).toMatch(/star-twinkle/);
+    expect(stars.some((star) => star.className.includes("star-glow"))).toBe(
+      true
+    );
   });
 
   it("renders a drifting haze layer", () => {
