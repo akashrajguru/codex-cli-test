@@ -282,6 +282,26 @@ export default function Home() {
                 className="star-twinkle absolute left-[80%] top-16 h-1.5 w-1.5 rounded-full bg-white/60"
                 style={{ animationDelay: "1.4s" }}
               />
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-[12%] top-14 h-1 w-1 rounded-full bg-white/70"
+                style={{ animationDelay: "0.2s" }}
+              />
+              <div
+                data-testid="star"
+                className="star-twinkle star-glow absolute left-[42%] top-6 h-1.5 w-1.5 rounded-full bg-white/80"
+                style={{ animationDelay: "1.2s" }}
+              />
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-[55%] top-[88px] h-1 w-1 rounded-full bg-white/65"
+                style={{ animationDelay: "0.8s" }}
+              />
+              <div
+                data-testid="star"
+                className="star-twinkle absolute left-[88%] top-10 h-1 w-1 rounded-full bg-white/70"
+                style={{ animationDelay: "1.6s" }}
+              />
             </>
           )}
           <div className="absolute left-1/2 top-10 h-6 w-6 rounded-full bg-white/70 blur-[1px]" />
