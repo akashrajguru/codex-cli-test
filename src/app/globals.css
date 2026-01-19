@@ -119,3 +119,20 @@ body {
 .star-glow {
   animation: star-glow 2.2s ease-in-out infinite;
 }
+
+@keyframes moon-wink {
+  0%,
+  85%,
+  100% {
+    transform: scaleY(1);
+  }
+  90%,
+  95% {
+    transform: scaleY(0.2);
+  }
+}
+
+.moon-wink {
+  transform-origin: center;
+  animation: moon-wink 4s ease-in-out infinite;
+}

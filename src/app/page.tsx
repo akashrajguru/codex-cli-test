@@ -238,10 +238,22 @@ export default function Home() {
           {isNight ? (
             <div
               data-testid="moon"
-              className="absolute right-10 top-8 h-10 w-10 rounded-full bg-slate-100 shadow-[0_0_12px_rgba(248,250,252,0.7)]"
+              className="absolute right-8 top-6 h-14 w-14 rounded-full bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 shadow-[0_0_18px_rgba(248,250,252,0.75)]"
               aria-hidden="true"
             >
-              <div className="absolute right-2 top-2 h-6 w-6 rounded-full bg-slate-800" />
+              <div className="absolute right-2 top-2 h-4 w-4 rounded-full bg-slate-200/70" />
+              <div className="absolute left-2 top-2.5 h-3.5 w-3.5 rounded-full bg-slate-200/70" />
+              <div className="absolute left-7 top-2 h-2.5 w-2.5 rounded-full bg-slate-200/60" />
+              <div className="absolute left-9.5 top-7 h-3 w-3 rounded-full bg-slate-200/60" />
+              <div className="absolute left-3.5 top-9 h-2.5 w-2.5 rounded-full bg-slate-200/70" />
+              <div
+                data-testid="moon-eye"
+                className="absolute left-4.5 top-5 h-2 w-2 rounded-full bg-slate-700"
+              />
+              <div className="moon-wink absolute left-7.5 top-5.5 h-1.5 w-4 rounded-full bg-slate-700" />
+              <div className="absolute left-4 top-9 h-2 w-6 rounded-full border-b-[3px] border-slate-600" />
+              <div className="absolute left-2.5 top-9.5 h-1.5 w-3 rounded-full bg-rose-200/90" />
+              <div className="absolute left-9 top-9.5 h-1.5 w-3 rounded-full bg-rose-200/90" />
             </div>
           ) : (
             <div

@@ -185,4 +185,17 @@ describe("Home page", () => {
     expect(hazeLayers[0].className).toMatch(/haze-drift/);
     expect(hazeLayers[1].className).toMatch(/haze-drift-slow/);
   });
+
+  it("adds a blinking wink on the moon", () => {
+    render(<Home />);
+
+    fireEvent.keyDown(window, { code: "Space" });
+
+    act(() => {
+      jest.advanceTimersByTime(3200);
+    });
+
+    const wink = screen.getByTestId("moon").querySelector(".moon-wink");
+    expect(wink).not.toBeNull();
+  });
 });
