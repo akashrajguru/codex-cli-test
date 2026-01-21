@@ -138,6 +138,7 @@ describe("Home page", () => {
     fireEvent.keyDown(window, { code: "Space" });
     expect(screen.getByTestId("sun")).toBeInTheDocument();
     expect(screen.getAllByTestId("sun-face").length).toBeGreaterThan(0);
+    expect(screen.getAllByTestId("sun-ray").length).toBeGreaterThan(0);
 
     act(() => {
       jest.advanceTimersByTime(3200);

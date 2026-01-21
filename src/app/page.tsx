@@ -262,6 +262,14 @@ export default function Home() {
               aria-hidden="true"
             >
               <div
+                data-testid="sun-ray"
+                className="absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-amber-200/70"
+              />
+              <div
+                data-testid="sun-ray"
+                className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-amber-200/50"
+              />
+              <div
                 data-testid="sun-face"
                 className="absolute left-3 top-4 h-2 w-2 rounded-full bg-amber-900/80"
               />
