@@ -258,9 +258,30 @@ export default function Home() {
           ) : (
             <div
               data-testid="sun"
-              className="absolute right-10 top-8 h-10 w-10 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,0.9)]"
+              className="absolute right-8 top-6 h-14 w-14 rounded-full bg-gradient-to-br from-amber-200 via-amber-300 to-amber-400 shadow-[0_0_16px_rgba(252,211,77,0.95)]"
               aria-hidden="true"
-            />
+            >
+              <div
+                data-testid="sun-face"
+                className="absolute left-3 top-4 h-2 w-2 rounded-full bg-amber-900/80"
+              />
+              <div
+                data-testid="sun-face"
+                className="absolute left-8.5 top-4 h-2 w-2 rounded-full bg-amber-900/80"
+              />
+              <div
+                data-testid="sun-face"
+                className="absolute left-4.5 top-8 h-2 w-6 rounded-full border-b-[3px] border-amber-900/80"
+              />
+              <div
+                data-testid="sun-face"
+                className="absolute left-2.5 top-7.5 h-1.5 w-2.5 rounded-full bg-rose-200/80"
+              />
+              <div
+                data-testid="sun-face"
+                className="absolute left-9 top-7.5 h-1.5 w-2.5 rounded-full bg-rose-200/80"
+              />
+            </div>
           )}
           {isNight && (
             <>
